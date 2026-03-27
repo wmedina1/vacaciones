@@ -30,10 +30,6 @@ def inject_css() -> None:
         }
 
         /* Reduce espacio extra de Streamlit */
-        div[data-testid="stVerticalBlock"] > div:has(.hero-title) {
-            gap: 0.2rem;
-        }
-
         .hero-title {
             font-size: 1.55rem;
             font-weight: 700;

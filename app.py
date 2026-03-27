@@ -23,132 +23,66 @@ def inject_css() -> None:
     st.markdown(
         """
         <style>
-        /* =========================================================
-           CONTENEDOR GENERAL
-        ========================================================= */
         .block-container {
-            padding-top: 2.1rem;
-            padding-bottom: 0.5rem;
+            padding-top: 0.9rem;
+            padding-bottom: 1rem;
             max-width: 1450px;
         }
 
-        header[data-testid="stHeader"] {
-            background: rgba(255, 255, 255, 0);
-        }
-
-        div[data-testid="stVerticalBlock"] {
-            gap: 0.38rem;
-        }
-
-        /* =========================================================
-           TÍTULO Y SUBTÍTULO
-        ========================================================= */
         .hero-title {
-            font-size: 1.48rem;
+            font-size: 1.65rem;
             font-weight: 700;
             color: #0f172a;
-            margin-top: 0.18rem;
-            margin-bottom: 0.08rem;
+            margin-bottom: 0.18rem;
             letter-spacing: -0.02em;
-            line-height: 1.05;
+            line-height: 1.1;
         }
 
         .hero-subtitle {
             color: #64748b;
-            font-size: 0.84rem;
-            margin-bottom: 0.4rem;
-            line-height: 1.12;
+            font-size: 0.92rem;
+            margin-bottom: 0.7rem;
+            line-height: 1.2;
         }
 
-        /* =========================================================
-           TOOLBAR / FILTROS
-        ========================================================= */
         .toolbar-wrap {
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 0.44rem 0.56rem 0.16rem 0.56rem;
-            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
-            margin-bottom: 0.35rem;
+            border-radius: 16px;
+            padding: 0.7rem 0.8rem 0.4rem 0.8rem;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+            margin-bottom: 0.7rem;
         }
 
-        div[data-testid="column"] {
-            padding-top: 0rem !important;
-            padding-bottom: 0rem !important;
-        }
-
-        label[data-testid="stWidgetLabel"] {
-            margin-bottom: 0.08rem !important;
-        }
-
-        label[data-testid="stWidgetLabel"] p {
-            font-size: 0.75rem !important;
-            margin-bottom: 0px !important;
-            line-height: 1.02 !important;
-            color: #475569 !important;
-            font-weight: 600 !important;
-        }
-
-        div[data-baseweb="select"] > div {
-            min-height: 32px !important;
-            border-radius: 10px !important;
-        }
-
-        div[data-testid="stSelectbox"] {
-            margin-bottom: 0rem !important;
-        }
-
-        .stButton > button {
-            min-height: 32px;
-            border-radius: 10px;
-            font-size: 0.79rem;
-            font-weight: 600;
-            padding-top: 0.08rem;
-            padding-bottom: 0.08rem;
-        }
-
-        /* =========================================================
-           MÉTRICAS
-        ========================================================= */
         .metric-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 0.58rem 0.78rem;
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+            border-radius: 16px;
+            padding: 0.8rem 0.95rem;
+            box-shadow: 0 5px 16px rgba(15, 23, 42, 0.04);
         }
 
         .metric-label {
             color: #64748b;
-            font-size: 0.77rem;
-            margin-bottom: 0.1rem;
-            line-height: 1.05;
+            font-size: 0.84rem;
+            margin-bottom: 0.18rem;
+            line-height: 1.1;
         }
 
         .metric-value {
             color: #0f172a;
-            font-size: 1.28rem;
+            font-size: 1.55rem;
             font-weight: 700;
-            line-height: 1.02;
+            line-height: 1.05;
         }
 
-        .data-source-note {
-            font-size: 0.7rem;
-            color: #64748b;
-            margin-top: 0.14rem;
-            line-height: 1.08;
-        }
-
-        /* =========================================================
-           CALENDARIO
-        ========================================================= */
         .calendar-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 18px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
-            margin-top: 0.35rem;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+            margin-top: 0.7rem;
         }
 
         .calendar-header {
@@ -159,13 +93,13 @@ def inject_css() -> None:
         }
 
         .weekday {
-            padding: 0.52rem 0.22rem;
+            padding: 0.55rem 0.3rem;
             text-align: center;
-            font-size: 0.72rem;
+            font-size: 0.78rem;
             font-weight: 700;
             color: #475569;
             border-right: 1px solid #edf2f7;
-            line-height: 1.05;
+            line-height: 1.1;
         }
 
         .weekday:last-child {
@@ -178,10 +112,10 @@ def inject_css() -> None:
         }
 
         .day-cell {
-            min-height: 124px;
+            min-height: 122px;
             border-right: 1px solid #edf2f7;
             border-bottom: 1px solid #edf2f7;
-            padding: 0.34rem 0.34rem 0.3rem 0.34rem;
+            padding: 0.42rem;
             position: relative;
             background: #ffffff;
             overflow: hidden;
@@ -203,20 +137,19 @@ def inject_css() -> None:
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.22rem;
+            margin-bottom: 0.3rem;
         }
 
         .day-number {
-            font-size: 0.78rem;
+            font-size: 0.82rem;
             font-weight: 700;
             color: #0f172a;
-            width: 1.42rem;
-            height: 1.42rem;
+            width: 1.6rem;
+            height: 1.6rem;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 999px;
-            line-height: 1;
         }
 
         .other-month .day-number {
@@ -231,18 +164,18 @@ def inject_css() -> None:
         .people-list {
             display: flex;
             flex-direction: column;
-            gap: 0.16rem;
-            margin-top: 0.08rem;
+            gap: 0.18rem;
+            margin-top: 0.1rem;
         }
 
         .person-chip {
             background: #e0f2fe;
             color: #0f172a;
-            border-radius: 7px;
-            padding: 0.15rem 0.28rem;
-            font-size: 0.62rem;
+            border-radius: 8px;
+            padding: 0.18rem 0.32rem;
+            font-size: 0.68rem;
             font-weight: 600;
-            line-height: 1.05;
+            line-height: 1.1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -257,107 +190,33 @@ def inject_css() -> None:
 
         .more-chip {
             color: #2563eb;
-            font-size: 0.62rem;
+            font-size: 0.68rem;
             font-weight: 700;
-            padding-top: 0.05rem;
-            line-height: 1.02;
+            padding: 0.08rem 0 0 0;
+            line-height: 1.1;
         }
 
         .empty-note {
             color: #94a3b8;
-            font-size: 0.6rem;
-            margin-top: 0.1rem;
+            font-size: 0.68rem;
+            margin-top: 0.18rem;
             line-height: 1;
         }
 
-        /* =========================================================
-           RESPONSIVE
-        ========================================================= */
-        @media (max-height: 920px) {
-            .block-container {
-                padding-top: 1.9rem;
-            }
-
-            .hero-title {
-                font-size: 1.38rem;
-            }
-
-            .hero-subtitle {
-                font-size: 0.8rem;
-                margin-bottom: 0.35rem;
-            }
-
-            .toolbar-wrap {
-                padding: 0.4rem 0.5rem 0.16rem 0.5rem;
-                margin-bottom: 0.32rem;
-            }
-
-            .metric-card {
-                padding: 0.52rem 0.68rem;
-            }
-
-            .metric-value {
-                font-size: 1.12rem;
-            }
-
-            .weekday {
-                padding: 0.42rem 0.18rem;
-                font-size: 0.68rem;
-            }
-
-            .day-cell {
-                min-height: 110px;
-                padding: 0.26rem 0.26rem;
-            }
-
-            .day-number {
-                width: 1.28rem;
-                height: 1.28rem;
-                font-size: 0.72rem;
-            }
-
-            .person-chip,
-            .more-chip,
-            .empty-note {
-                font-size: 0.58rem;
-            }
-
-            div[data-baseweb="select"] > div {
-                min-height: 30px !important;
-            }
-
-            .stButton > button {
-                min-height: 30px;
-                font-size: 0.76rem;
-            }
+        .data-source-note {
+            font-size: 0.76rem;
+            color: #64748b;
+            margin-top: 0.3rem;
+            line-height: 1.15;
         }
 
-        @media (max-width: 1200px) {
-            .hero-title {
-                font-size: 1.35rem;
-            }
+        div[data-baseweb="select"] > div {
+            min-height: 38px !important;
+        }
 
-            .hero-subtitle {
-                font-size: 0.8rem;
-            }
-
-            .metric-value {
-                font-size: 1.1rem;
-            }
-
-            .weekday {
-                font-size: 0.67rem;
-            }
-
-            .day-cell {
-                min-height: 104px;
-            }
-
-            .person-chip,
-            .more-chip,
-            .empty-note {
-                font-size: 0.57rem;
-            }
+        .stButton > button {
+            min-height: 38px;
+            border-radius: 10px;
         }
         </style>
         """,
@@ -597,7 +456,7 @@ def main() -> None:
     inject_css()
     init_session_state()
 
-    st.markdown("<div class='hero-title'>Vacaciones del personal</div>", unsafe_allow_html=True)
+    st.markdown("<div class='hero-title'>RRHH | Vacaciones del personal</div>", unsafe_allow_html=True)
     st.markdown(
         "<div class='hero-subtitle'>Calendario mensual para visualizar el personal en vacaciones por fecha y departamento.</div>",
         unsafe_allow_html=True,

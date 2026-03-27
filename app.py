@@ -23,66 +23,139 @@ def inject_css() -> None:
     st.markdown(
         """
         <style>
+        /* =========================================================
+           CONTENEDOR GENERAL
+        ========================================================= */
         .block-container {
-            padding-top: 0.75rem;
-            padding-bottom: 0.8rem;
+            padding-top: 2.1rem;
+            padding-bottom: 0.7rem;
             max-width: 1450px;
         }
 
+        /* Oculta parte del header nativo para ganar espacio */
+        header[data-testid="stHeader"] {
+            background: rgba(255, 255, 255, 0);
+        }
+
+        /* Reduce espacios verticales generales */
+        div[data-testid="stVerticalBlock"] {
+            gap: 0.45rem;
+        }
+
+        /* =========================================================
+           TÍTULO Y SUBTÍTULO
+        ========================================================= */
         .hero-title {
-            font-size: 1.55rem;
+            font-size: 1.48rem;
             font-weight: 700;
             color: #0f172a;
-            margin-bottom: 0.12rem;
+            margin-top: 0.18rem;
+            margin-bottom: 0.08rem;
             letter-spacing: -0.02em;
-            line-height: 1.08;
+            line-height: 1.05;
         }
 
         .hero-subtitle {
             color: #64748b;
-            font-size: 0.88rem;
-            margin-bottom: 0.55rem;
-            line-height: 1.15;
+            font-size: 0.84rem;
+            margin-bottom: 0.45rem;
+            line-height: 1.12;
         }
 
+        /* =========================================================
+           TOOLBAR / FILTROS
+        ========================================================= */
         .toolbar-wrap {
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 0.65rem 0.75rem 0.35rem 0.75rem;
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
-            margin-bottom: 0.6rem;
+            border-radius: 14px;
+            padding: 0.48rem 0.58rem 0.22rem 0.58rem;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+            margin-bottom: 0.45rem;
         }
 
+        /* Reduce padding interno de columnas */
+        div[data-testid="column"] {
+            padding-top: 0rem !important;
+            padding-bottom: 0rem !important;
+        }
+
+        /* Labels de widgets */
+        label[data-testid="stWidgetLabel"] {
+            margin-bottom: 0.1rem !important;
+        }
+
+        label[data-testid="stWidgetLabel"] p {
+            font-size: 0.76rem !important;
+            margin-bottom: 0px !important;
+            line-height: 1.05 !important;
+            color: #475569 !important;
+            font-weight: 600 !important;
+        }
+
+        /* Selectbox más compactos */
+        div[data-baseweb="select"] > div {
+            min-height: 32px !important;
+            border-radius: 10px !important;
+        }
+
+        /* Reduce separación interna de widgets */
+        div[data-testid="stSelectbox"] {
+            margin-bottom: 0rem !important;
+        }
+
+        /* Botones más compactos */
+        .stButton > button {
+            min-height: 32px;
+            border-radius: 10px;
+            font-size: 0.79rem;
+            font-weight: 600;
+            padding-top: 0.08rem;
+            padding-bottom: 0.08rem;
+        }
+
+        /* =========================================================
+           MÉTRICAS
+        ========================================================= */
         .metric-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 0.7rem 0.85rem;
-            box-shadow: 0 5px 16px rgba(15, 23, 42, 0.04);
+            border-radius: 14px;
+            padding: 0.62rem 0.78rem;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
         }
 
         .metric-label {
             color: #64748b;
-            font-size: 0.8rem;
-            margin-bottom: 0.15rem;
-            line-height: 1.1;
+            font-size: 0.77rem;
+            margin-bottom: 0.12rem;
+            line-height: 1.05;
         }
 
         .metric-value {
             color: #0f172a;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            line-height: 1.05;
+            line-height: 1.02;
         }
 
+        .data-source-note {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 0.18rem;
+            line-height: 1.08;
+        }
+
+        /* =========================================================
+           CALENDARIO
+        ========================================================= */
         .calendar-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 18px;
             overflow: hidden;
             box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
-            margin-top: 0.55rem;
+            margin-top: 0.4rem;
         }
 
         .calendar-header {
@@ -93,9 +166,9 @@ def inject_css() -> None:
         }
 
         .weekday {
-            padding: 0.48rem 0.25rem;
+            padding: 0.45rem 0.22rem;
             text-align: center;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             font-weight: 700;
             color: #475569;
             border-right: 1px solid #edf2f7;
@@ -112,10 +185,10 @@ def inject_css() -> None:
         }
 
         .day-cell {
-            min-height: 108px;
+            min-height: 102px;
             border-right: 1px solid #edf2f7;
             border-bottom: 1px solid #edf2f7;
-            padding: 0.32rem 0.34rem 0.28rem 0.34rem;
+            padding: 0.28rem 0.3rem 0.24rem 0.3rem;
             position: relative;
             background: #ffffff;
             overflow: hidden;
@@ -137,19 +210,20 @@ def inject_css() -> None:
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.22rem;
+            margin-bottom: 0.18rem;
         }
 
         .day-number {
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             font-weight: 700;
             color: #0f172a;
-            width: 1.45rem;
-            height: 1.45rem;
+            width: 1.4rem;
+            height: 1.4rem;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 999px;
+            line-height: 1;
         }
 
         .other-month .day-number {
@@ -164,18 +238,18 @@ def inject_css() -> None:
         .people-list {
             display: flex;
             flex-direction: column;
-            gap: 0.14rem;
-            margin-top: 0.05rem;
+            gap: 0.12rem;
+            margin-top: 0.04rem;
         }
 
         .person-chip {
             background: #e0f2fe;
             color: #0f172a;
             border-radius: 7px;
-            padding: 0.14rem 0.28rem;
-            font-size: 0.62rem;
+            padding: 0.12rem 0.26rem;
+            font-size: 0.6rem;
             font-weight: 600;
-            line-height: 1.05;
+            line-height: 1.02;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -190,54 +264,110 @@ def inject_css() -> None:
 
         .more-chip {
             color: #2563eb;
-            font-size: 0.62rem;
+            font-size: 0.6rem;
             font-weight: 700;
-            padding-top: 0.06rem;
-            line-height: 1.05;
+            padding-top: 0.04rem;
+            line-height: 1.02;
         }
 
         .empty-note {
             color: #94a3b8;
-            font-size: 0.62rem;
-            margin-top: 0.12rem;
+            font-size: 0.6rem;
+            margin-top: 0.1rem;
             line-height: 1;
         }
 
-        .data-source-note {
-            font-size: 0.72rem;
-            color: #64748b;
-            margin-top: 0.22rem;
-            line-height: 1.1;
-        }
-
-        div[data-baseweb="select"] > div {
-            min-height: 36px !important;
-        }
-
-        .stButton > button {
-            min-height: 36px;
-            border-radius: 10px;
-            font-size: 0.84rem;
-            padding-top: 0.15rem;
-            padding-bottom: 0.15rem;
-        }
-
-        label[data-testid="stWidgetLabel"] p {
-            font-size: 0.82rem !important;
-        }
-
-        @media (max-height: 900px) {
-            .day-cell {
-                min-height: 96px;
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+        @media (max-height: 920px) {
+            .block-container {
+                padding-top: 1.9rem;
             }
 
-            .person-chip {
-                font-size: 0.58rem;
-                padding: 0.12rem 0.24rem;
+            .hero-title {
+                font-size: 1.38rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.8rem;
+                margin-bottom: 0.38rem;
+            }
+
+            .toolbar-wrap {
+                padding: 0.42rem 0.52rem 0.18rem 0.52rem;
+                margin-bottom: 0.38rem;
+            }
+
+            .metric-card {
+                padding: 0.56rem 0.7rem;
             }
 
             .metric-value {
-                font-size: 1.25rem;
+                font-size: 1.15rem;
+            }
+
+            .weekday {
+                padding: 0.38rem 0.18rem;
+                font-size: 0.68rem;
+            }
+
+            .day-cell {
+                min-height: 92px;
+                padding: 0.22rem 0.24rem;
+            }
+
+            .day-number {
+                width: 1.28rem;
+                height: 1.28rem;
+                font-size: 0.72rem;
+            }
+
+            .person-chip,
+            .more-chip,
+            .empty-note {
+                font-size: 0.56rem;
+            }
+
+            div[data-baseweb="select"] > div {
+                min-height: 30px !important;
+            }
+
+            .stButton > button {
+                min-height: 30px;
+                font-size: 0.76rem;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .block-container {
+                padding-top: 1.9rem;
+            }
+
+            .hero-title {
+                font-size: 1.35rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.8rem;
+            }
+
+            .metric-value {
+                font-size: 1.12rem;
+            }
+
+            .weekday {
+                font-size: 0.67rem;
+            }
+
+            .day-cell {
+                min-height: 86px;
+            }
+
+            .person-chip,
+            .more-chip,
+            .empty-note {
+                font-size: 0.55rem;
             }
         }
         </style>

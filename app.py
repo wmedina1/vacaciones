@@ -10,7 +10,7 @@ import streamlit as st
 # CONFIGURACIÓN GENERAL
 # =========================================================
 st.set_page_config(
-    page_title="PRUEBA TITULO NUEVO",
+    page_title="RRHH | Vacaciones del Personal",
     page_icon="📅",
     layout="wide",
 )
@@ -502,11 +502,26 @@ def main() -> None:
     inject_css()
     init_session_state()
 
-    st.markdown("<div class='hero-title'>RRHH | Vacaciones del Personal</div>", unsafe_allow_html=True)
+    st.markdown(
+    """
+    <h1 style="
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 0.2rem 0;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    ">
+        RRHH | Vacaciones del Personal
+    </h1>
+    """,
+    unsafe_allow_html=True,
+    )
     st.markdown(
         "<div class='hero-subtitle'>Calendario mensual para visualizar el personal en vacaciones por fecha y departamento.</div>",
         unsafe_allow_html=True,
     )
+
 
     try:
         file_path, file_note = locate_data_file()
@@ -520,7 +535,7 @@ def main() -> None:
     year_options = list(range(max(2020, df["fecha_desde"].dt.year.min() - 1), df["fecha_hasta"].dt.year.max() + 2))
     month_options = list(range(1, 13))
 
-    st.markdown("<div class='toolbar-wrap'>", unsafe_allow_html=True)
+#     st.markdown("<div class='toolbar-wrap'>", unsafe_allow_html=True)
     nav_col_1, nav_col_2, nav_col_3, nav_col_4, nav_col_5, nav_col_6 = st.columns([1.1, 1.1, 1.2, 1.7, 1.2, 1.2])
 
     with nav_col_1:

@@ -10,7 +10,7 @@ import streamlit as st
 # CONFIGURACIÓN GENERAL
 # =========================================================
 st.set_page_config(
-    page_title="RRHH | Vacaciones del Personal",
+    page_title="Vacaciones del personal",
     page_icon="📅",
     layout="wide",
 )
@@ -506,7 +506,7 @@ def main() -> None:
     inject_css()
     init_session_state()
 
-    st.markdown("<div class='hero-title'>Vacaciones del personal</div>", unsafe_allow_html=True)
+    st.markdown("<div class='hero-title'>RRHH | Vacaciones del Personal</div>", unsafe_allow_html=True)
     st.markdown(
         "<div class='hero-subtitle'>Calendario mensual para visualizar el personal en vacaciones por fecha y departamento.</div>",
         unsafe_allow_html=True,

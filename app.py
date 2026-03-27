@@ -10,7 +10,7 @@ import streamlit as st
 # CONFIGURACIÓN GENERAL
 # =========================================================
 st.set_page_config(
-    page_title="Vacaciones del personal",
+    page_title="RRHH | Vacaciones del Personal",
     page_icon="📅",
     layout="wide",
 )

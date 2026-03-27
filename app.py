@@ -441,7 +441,7 @@ def main() -> None:
     inject_css()
     init_session_state()
 
-    st.markdown("<div class='hero-title'>Vacaciones del personal</div>", unsafe_allow_html=True)
+    st.markdown("<div class='hero-title'>RRHH | Vacaciones del personal</div>", unsafe_allow_html=True)
     st.markdown(
         "<div class='hero-subtitle'>Calendario mensual para visualizar el personal en vacaciones por fecha y departamento.</div>",
         unsafe_allow_html=True,

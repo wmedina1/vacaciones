@@ -10,7 +10,7 @@ import streamlit as st
 # CONFIGURACIÓN GENERAL
 # =========================================================
 st.set_page_config(
-    page_title="RRHH | Vacaciones del Personal",
+    page_title="Vacaciones del personal",
     page_icon="📅",
     layout="wide",
 )
@@ -24,66 +24,62 @@ def inject_css() -> None:
         """
         <style>
         .block-container {
-            padding-top: 0.7rem;
-            padding-bottom: 0.8rem;
-            max-width: 1500px;
+            padding-top: 1.6rem;
+            padding-bottom: 2rem;
+            max-width: 1400px;
         }
 
-        /* Reduce espacio extra de Streamlit */
         .hero-title {
-            font-size: 1.55rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #0f172a;
-            margin-bottom: 0.15rem;
+            margin-bottom: 0.35rem;
             letter-spacing: -0.02em;
-            line-height: 1.1;
         }
 
         .hero-subtitle {
             color: #64748b;
-            font-size: 0.9rem;
-            margin-bottom: 0.55rem;
-            line-height: 1.2;
+            font-size: 0.98rem;
+            margin-bottom: 1.2rem;
         }
 
         .toolbar-wrap {
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 0.7rem 0.8rem 0.45rem 0.8rem;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
-            margin-bottom: 0.65rem;
+            border-radius: 18px;
+            padding: 1rem 1rem 0.65rem 1rem;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+            margin-bottom: 1rem;
         }
 
         .metric-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 0.75rem 0.9rem;
-            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+            border-radius: 18px;
+            padding: 1rem 1.1rem;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
         }
 
         .metric-label {
             color: #64748b;
-            font-size: 0.82rem;
-            margin-bottom: 0.2rem;
-            line-height: 1.15;
+            font-size: 0.92rem;
+            margin-bottom: 0.3rem;
         }
 
         .metric-value {
             color: #0f172a;
-            font-size: 1.45rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            line-height: 1.05;
+            line-height: 1.1;
         }
 
         .calendar-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 20px;
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
-            margin-top: 0.7rem;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+            margin-top: 1rem;
         }
 
         .calendar-header {
@@ -94,13 +90,12 @@ def inject_css() -> None:
         }
 
         .weekday {
-            padding: 0.55rem 0.3rem;
+            padding: 0.9rem 0.5rem;
             text-align: center;
-            font-size: 0.78rem;
+            font-size: 0.86rem;
             font-weight: 700;
             color: #475569;
             border-right: 1px solid #edf2f7;
-            line-height: 1.1;
         }
 
         .weekday:last-child {
@@ -113,14 +108,12 @@ def inject_css() -> None:
         }
 
         .day-cell {
-            min-height: clamp(88px, 12vh, 120px);
-            max-height: clamp(88px, 12vh, 120px);
+            min-height: 158px;
             border-right: 1px solid #edf2f7;
             border-bottom: 1px solid #edf2f7;
-            padding: 0.38rem 0.42rem 0.32rem 0.42rem;
+            padding: 0.65rem;
             position: relative;
             background: #ffffff;
-            overflow: hidden;
         }
 
         .day-cell:nth-child(7n) {
@@ -139,20 +132,19 @@ def inject_css() -> None:
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
         }
 
         .day-number {
-            font-size: 0.82rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #0f172a;
-            width: 1.6rem;
-            height: 1.6rem;
+            width: 2rem;
+            height: 2rem;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 999px;
-            line-height: 1;
         }
 
         .other-month .day-number {
@@ -167,18 +159,18 @@ def inject_css() -> None:
         .people-list {
             display: flex;
             flex-direction: column;
-            gap: 0.18rem;
-            margin-top: 0.1rem;
+            gap: 0.32rem;
+            margin-top: 0.2rem;
         }
 
         .person-chip {
             background: #e0f2fe;
             color: #0f172a;
-            border-radius: 8px;
-            padding: 0.18rem 0.32rem;
-            font-size: 0.68rem;
+            border-radius: 10px;
+            padding: 0.28rem 0.45rem;
+            font-size: 0.78rem;
             font-weight: 600;
-            line-height: 1.1;
+            line-height: 1.2;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -193,80 +185,27 @@ def inject_css() -> None:
 
         .more-chip {
             color: #2563eb;
-            font-size: 0.68rem;
+            font-size: 0.78rem;
             font-weight: 700;
-            padding: 0.1rem 0 0 0;
-            line-height: 1.1;
+            padding: 0.2rem 0.1rem 0 0.1rem;
         }
 
         .empty-note {
             color: #94a3b8;
-            font-size: 0.68rem;
-            margin-top: 0.2rem;
-            line-height: 1;
+            font-size: 0.8rem;
+            margin-top: 0.55rem;
         }
 
         .data-source-note {
-            font-size: 0.76rem;
+            font-size: 0.82rem;
             color: #64748b;
-            margin-top: 0.35rem;
-            line-height: 1.15;
-        }
-
-        /* Hace más compactos algunos widgets de Streamlit */
-        div[data-baseweb="select"] > div {
-            min-height: 38px !important;
-        }
-
-        .stButton > button {
-            min-height: 38px;
-            border-radius: 10px;
-        }
-
-        /* Ajuste para laptops medianas */
-        @media (max-height: 900px) {
-            .day-cell {
-                min-height: clamp(78px, 10.5vh, 102px);
-                max-height: clamp(78px, 10.5vh, 102px);
-            }
-
-            .person-chip {
-                font-size: 0.64rem;
-                padding: 0.14rem 0.28rem;
-            }
-
-            .weekday {
-                font-size: 0.74rem;
-                padding: 0.48rem 0.25rem;
-            }
-        }
-
-        /* Si la pantalla es pequeña, compacta más */
-        @media (max-width: 1200px) {
-            .metric-value {
-                font-size: 1.2rem;
-            }
-
-            .day-cell {
-                padding: 0.28rem 0.3rem;
-            }
-
-            .day-number {
-                width: 1.45rem;
-                height: 1.45rem;
-                font-size: 0.76rem;
-            }
-
-            .person-chip,
-            .more-chip,
-            .empty-note {
-                font-size: 0.62rem;
-            }
+            margin-top: 0.6rem;
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
+
 
 # =========================================================
 # CARGA DE DATOS
@@ -502,11 +441,7 @@ def main() -> None:
     inject_css()
     init_session_state()
 
-    st.markdown(
-        "<h1 style='font-size:1.7rem;font-weight:700;color:#0f172a;margin:0 0 .2rem 0;'>RRHH | Vacaciones del Personal</h1>",
-        unsafe_allow_html=True
-    )
-
+    st.markdown("<div class='hero-title'>Vacaciones del personal</div>", unsafe_allow_html=True)
     st.markdown(
         "<div class='hero-subtitle'>Calendario mensual para visualizar el personal en vacaciones por fecha y departamento.</div>",
         unsafe_allow_html=True,
@@ -517,14 +452,16 @@ def main() -> None:
         df = load_data(str(file_path))
         expanded_df = expand_vacation_ranges(df)
     except Exception as exc:
-        st.error(f'No fue posible cargar los datos: {exc}')
+        st.error(f"No fue posible cargar los datos: {exc}")
         st.stop()
 
     departments = ["Todos"] + sorted(df["departamento"].dropna().unique().tolist())
     year_options = list(range(max(2020, df["fecha_desde"].dt.year.min() - 1), df["fecha_hasta"].dt.year.max() + 2))
     month_options = list(range(1, 13))
 
+    st.markdown("<div class='toolbar-wrap'>", unsafe_allow_html=True)
     nav_col_1, nav_col_2, nav_col_3, nav_col_4, nav_col_5, nav_col_6 = st.columns([1.1, 1.1, 1.2, 1.7, 1.2, 1.2])
+
     with nav_col_1:
         if st.button("◀ Mes anterior", use_container_width=True):
             y, m = shift_month(st.session_state.selected_year, st.session_state.selected_month, -1)

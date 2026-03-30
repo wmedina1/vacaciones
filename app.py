@@ -213,46 +213,46 @@ def inject_css() -> None:
             gap: 3px;
         }
 
-        /* Chip genérico – color viene inline */
+        /* ── Barra tipo Google Calendar ── */
         .ev-chip {
-            border-radius: 6px;
-            padding: 3px 7px;
+            height: 22px;
+            display: flex;
+            align-items: center;
             font-family: 'DM Sans', sans-serif;
-            font-size: 0.76rem;
+            font-size: 0.74rem;
             font-weight: 600;
-            line-height: 1.3;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
-            border-top: 2px solid transparent;
-            border-bottom: 2px solid transparent;
+            box-sizing: border-box;
+            margin-left: -0.45rem;
+            margin-right: -0.45rem;
         }
 
-        /* Chip que abarca un rango: distintos bordes según posición */
         .ev-chip.span-start {
-            border-radius: 8px 0 0 8px;
-            border-left: 3px solid transparent;
+            border-radius: 4px 0 0 4px;
+            padding-left: 8px;
             padding-right: 0;
-            margin-right: -1px;
+            margin-right: 0;
         }
 
         .ev-chip.span-middle {
             border-radius: 0;
-            padding-left: 0;
-            padding-right: 0;
-            margin-left: -1px;
-            margin-right: -1px;
+            padding: 0;
+            margin-left: 0;
+            margin-right: 0;
         }
 
         .ev-chip.span-end {
-            border-radius: 0 8px 8px 0;
-            border-right: 3px solid transparent;
-            padding-left: 0;
-            margin-left: -1px;
+            border-radius: 0 4px 4px 0;
+            padding: 0;
+            margin-left: 0;
         }
 
         .ev-chip.span-solo {
-            border-radius: 8px;
+            border-radius: 4px;
+            padding-left: 8px;
+            padding-right: 8px;
         }
 
         .empty-cell {
@@ -434,13 +434,12 @@ def build_span_events(df: pd.DataFrame, year: int, month: int) -> dict[date, lis
 def _chip_html(ev: dict) -> str:
     c = ev["color"]
     pos = ev["position"]
-    label = ev["name"] if ev["show_label"] else "&nbsp;"
+    show_label = pos in ("start", "solo")
+    label = ev["name"] if show_label else ""
     safe = label.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    style = (
-        f"background:{c['bg']};"
-        f"border-color:{c['border']};"
-        f"color:{c['text']};"
-    )
+    # Para las barras intermedias/finales usamos el color borde como fondo (más sólido y visible)
+    bg = c["bg"] if show_label else c["border"]
+    style = f"background:{bg};color:{c['text']};"
     return f"<div class='ev-chip span-{pos}' style='{style}'>{safe}</div>"
 
 
@@ -654,28 +653,7 @@ def main() -> None:
     # ── Leyenda ───────────────────────────────────────────
     render_legend(df_filtered, year, month)
 
-    # ── Tabla detalle ─────────────────────────────────────
-    first_day = date(year, month, 1)
-    last_day = date(year, month, calendar.monthrange(year, month)[1])
-    detail = df_filtered[
-        (df_filtered["fecha_desde"].dt.date <= last_day)
-        & (df_filtered["fecha_hasta"].dt.date >= first_day)
-    ].copy()
 
-    with st.expander("Ver detalle del mes en tabla", expanded=False):
-        if detail.empty:
-            st.info("No hay vacaciones registradas para el filtro y mes seleccionados.")
-        else:
-            detail_show = detail.copy()
-            detail_show["fecha_desde"] = detail_show["fecha_desde"].dt.strftime("%Y-%m-%d")
-            detail_show["fecha_hasta"] = detail_show["fecha_hasta"].dt.strftime("%Y-%m-%d")
-            detail_show = detail_show.rename(columns={
-                "nombre": "Nombre",
-                "departamento": "Departamento",
-                "fecha_desde": "Fecha desde",
-                "fecha_hasta": "Fecha hasta",
-            })
-            st.dataframe(detail_show, use_container_width=True, hide_index=True)
 
 
 if __name__ == "__main__":

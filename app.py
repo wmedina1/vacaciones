@@ -1,9 +1,11 @@
 import calendar
+import html
 from datetime import date, timedelta
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+
 
 # =========================================================
 # CONFIGURACIÓN GENERAL
@@ -14,29 +16,6 @@ st.set_page_config(
     layout="wide",
 )
 
-# =========================================================
-# PALETA DE COLORES POR PERSONA
-# =========================================================
-PERSON_COLORS = [
-    {"bg": "#dbeafe", "border": "#93c5fd", "text": "#1e3a5f"},  # azul
-    {"bg": "#dcfce7", "border": "#86efac", "text": "#14532d"},  # verde
-    {"bg": "#fef9c3", "border": "#fde047", "text": "#713f12"},  # amarillo
-    {"bg": "#fce7f3", "border": "#f9a8d4", "text": "#831843"},  # rosa
-    {"bg": "#ede9fe", "border": "#c4b5fd", "text": "#3b0764"},  # violeta
-    {"bg": "#ffedd5", "border": "#fdba74", "text": "#7c2d12"},  # naranja
-    {"bg": "#cffafe", "border": "#67e8f9", "text": "#164e63"},  # cyan
-    {"bg": "#d1fae5", "border": "#6ee7b7", "text": "#064e3b"},  # esmeralda
-    {"bg": "#fee2e2", "border": "#fca5a5", "text": "#7f1d1d"},  # rojo
-    {"bg": "#e0e7ff", "border": "#a5b4fc", "text": "#312e81"},  # indigo
-    {"bg": "#f0fdf4", "border": "#bbf7d0", "text": "#166534"},  # lima
-    {"bg": "#fdf4ff", "border": "#e9d5ff", "text": "#581c87"},  # morado
-]
-
-
-@st.cache_data(show_spinner=False)
-def build_color_map(names: tuple) -> dict:
-    return {name: PERSON_COLORS[i % len(PERSON_COLORS)] for i, name in enumerate(sorted(names))}
-
 
 # =========================================================
 # ESTILOS
@@ -45,261 +24,261 @@ def inject_css() -> None:
     st.markdown(
         """
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
-
-        html, body, [data-testid="stAppViewContainer"] {
-            background: #f0f4f8 !important;
+        .stApp {
+            background: #f8fafc;
         }
 
         .block-container {
-            padding-top: 2.5rem !important;
-            padding-bottom: 3rem !important;
-            max-width: 100% !important;
-            padding-left: 2rem !important;
-            padding-right: 2rem !important;
-        }
-
-        [data-testid="stHeader"] {
-            display: none !important;
+            padding-top: 2.9rem !important;   /* baja más todo el contenido */
+            padding-bottom: 1.2rem !important;
+            padding-left: 1.2rem !important;
+            padding-right: 1.2rem !important;
+            max-width: 100% !important;       /* ocupa pantalla completa */
         }
 
         .hero-wrap {
-            margin-bottom: 1.8rem;
+            margin-top: 0.8rem;
+            margin-bottom: 0.85rem;
         }
 
         .hero-title {
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-size: 2.4rem;
+            font-size: 2.15rem;
             font-weight: 800;
             color: #0f172a;
-            margin: 0 0 0.3rem 0;
-            letter-spacing: -0.04em;
+            margin-bottom: 0.2rem;
+            letter-spacing: -0.02em;
             line-height: 1.1;
         }
 
         .hero-subtitle {
-            font-family: 'DM Sans', sans-serif;
             color: #64748b;
-            font-size: 1rem;
-            margin: 0;
+            font-size: 0.96rem;
+            margin-bottom: 0.65rem;
         }
 
         .toolbar-wrap {
-            background: #ffffff;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 0.85rem 1rem;
-            box-shadow: 0 2px 12px rgba(15,23,42,0.04);
-            margin-bottom: 1.2rem;
+            border-radius: 18px;
+            padding: 0.8rem 0.9rem 0.35rem 0.9rem;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+            margin-bottom: 0.75rem;
         }
 
         .metric-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 1rem 1.2rem;
-            box-shadow: 0 2px 12px rgba(15,23,42,0.04);
-            height: 100%;
+            border-radius: 18px;
+            padding: 0.8rem 1rem;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+            min-height: 96px;
         }
 
         .metric-label {
-            font-family: 'DM Sans', sans-serif;
             color: #64748b;
-            font-size: 0.88rem;
-            font-weight: 500;
-            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.22rem;
         }
 
         .metric-value {
-            font-family: 'Bricolage Grotesque', sans-serif;
             color: #0f172a;
-            font-size: 2rem;
+            font-size: 1.65rem;
             font-weight: 800;
-            line-height: 1;
+            line-height: 1.08;
         }
 
-        .metric-period {
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-size: 1.35rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .data-note {
-            font-family: 'DM Sans', sans-serif;
+        .data-source-note {
             font-size: 0.8rem;
-            color: #94a3b8;
-            margin-top: 0.25rem;
+            color: #64748b;
+            margin-top: 0.35rem;
         }
 
-        /* ── CALENDARIO ─────────────────────────── */
-        .cal-outer {
+        .calendar-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 20px;
+            border-radius: 22px;
             overflow: hidden;
-            box-shadow: 0 4px 24px rgba(15,23,42,0.05);
-            margin-top: 1rem;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+            margin-top: 0.75rem;
+            width: 100%;
         }
 
-        .cal-header {
+        .calendar-header {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(7, minmax(0, 1fr));
             background: #f8fafc;
             border-bottom: 1px solid #e2e8f0;
         }
 
-        .cal-weekday {
-            padding: 0.8rem 0.5rem;
+        .weekday {
+            padding: 0.8rem 0.35rem;
             text-align: center;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #64748b;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
+            font-size: 0.83rem;
+            font-weight: 800;
+            color: #475569;
             border-right: 1px solid #edf2f7;
         }
 
-        .cal-weekday:last-child { border-right: none; }
+        .weekday:last-child {
+            border-right: none;
+        }
 
-        .cal-grid {
+        .week-row {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(7, minmax(0, 1fr));
         }
 
         .day-cell {
-            min-height: 140px;
+            min-height: 118px; /* más compacto para que quepa mejor */
             border-right: 1px solid #edf2f7;
             border-bottom: 1px solid #edf2f7;
-            padding: 0.55rem 0.45rem 0.45rem 0.45rem;
+            padding: 0.45rem 0.45rem 0.35rem 0.45rem;
             position: relative;
             background: #ffffff;
-            overflow: hidden;
         }
 
-        .day-cell:nth-child(7n) { border-right: none; }
+        .week-row .day-cell:last-child {
+            border-right: none;
+        }
 
-        .day-cell.other-month { background: #f9fafb; }
+        .day-cell.other-month {
+            background: #f8fafc;
+        }
 
         .day-cell.today {
-            background: linear-gradient(160deg, #eff6ff 0%, #ffffff 60%);
+            background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
         }
 
-        .day-num {
-            font-family: 'Bricolage Grotesque', sans-serif;
+        .day-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.2rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .day-number {
             font-size: 0.92rem;
-            font-weight: 700;
-            color: #1e293b;
-            width: 1.9rem;
-            height: 1.9rem;
-            display: inline-flex;
+            font-weight: 800;
+            color: #0f172a;
+            width: 1.8rem;
+            height: 1.8rem;
+            display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            margin-bottom: 0.4rem;
+            border-radius: 999px;
         }
 
-        .other-month .day-num { color: #cbd5e1; }
+        .other-month .day-number {
+            color: #94a3b8;
+        }
 
-        .today .day-num {
+        .today .day-number {
             background: #2563eb;
-            color: #ffffff;
+            color: white;
         }
 
-        .events-col {
+        .track-layer {
+            position: relative;
+            margin-top: 0.15rem;
+            z-index: 2;
+        }
+
+        .vac-line {
+            height: 22px;
             display: flex;
-            flex-direction: column;
-            gap: 3px;
+            align-items: center;
+            font-size: 0.73rem;
+            font-weight: 700;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            color: var(--txt);
+            position: relative;
+            margin-bottom: 0.16rem;
+            padding-left: 0.1rem;
+            background: rgba(255,255,255,0.0);
         }
 
-        /* Chip genérico – color viene inline */
-        .ev-chip {
-            border-radius: 6px;
-            padding: 3px 7px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.76rem;
-            font-weight: 600;
-            line-height: 1.3;
+        .vac-line::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 1px;
+            height: 3px;
+            background: var(--bg);
+            opacity: 0.95;
+            border-radius: 999px;
+        }
+
+        .vac-line.start {
+            padding-left: 0.3rem;
+        }
+
+        .vac-line.start::after {
+            border-top-left-radius: 999px;
+            border-bottom-left-radius: 999px;
+        }
+
+        .vac-line.end::after {
+            border-top-right-radius: 999px;
+            border-bottom-right-radius: 999px;
+        }
+
+        .vac-line.single::after {
+            border-radius: 999px;
+        }
+
+        .vac-name {
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
-            border-top: 2px solid transparent;
-            border-bottom: 2px solid transparent;
-        }
-
-        /* Chip que abarca un rango: distintos bordes según posición */
-        .ev-chip.span-start {
-            border-radius: 8px 0 0 8px;
-            border-left: 3px solid transparent;
-            padding-right: 0;
-            margin-right: -1px;
-        }
-
-        .ev-chip.span-middle {
-            border-radius: 0;
-            padding-left: 0;
-            padding-right: 0;
-            margin-left: -1px;
-            margin-right: -1px;
-        }
-
-        .ev-chip.span-end {
-            border-radius: 0 8px 8px 0;
-            border-right: 3px solid transparent;
-            padding-left: 0;
-            margin-left: -1px;
-        }
-
-        .ev-chip.span-solo {
+            background: rgba(255,255,255,0.82);
+            padding: 0.06rem 0.3rem;
             border-radius: 8px;
         }
 
-        .empty-cell {
-            font-family: 'DM Sans', sans-serif;
-            color: #e2e8f0;
-            font-size: 0.78rem;
-            margin-top: 0.3rem;
+        .extra-note {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 0.2rem;
+            font-weight: 700;
         }
 
-        /* ── Leyenda ── */
-        .legend-wrap {
+        .empty-note {
+            color: #cbd5e1;
+            font-size: 0.75rem;
+            margin-top: 0.7rem;
+        }
+
+        .calendar-legend {
             display: flex;
+            gap: 0.8rem;
             flex-wrap: wrap;
-            gap: 0.5rem 1rem;
-            margin-top: 1.1rem;
-            padding: 0.8rem 1rem;
+            padding: 0.8rem 1rem 0.15rem 1rem;
             background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
+            border-bottom: 1px solid #eef2f7;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 0.4rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: #334155;
+            gap: 0.35rem;
+            font-size: 0.78rem;
+            color: #475569;
+            font-weight: 600;
         }
 
         .legend-dot {
             width: 12px;
             height: 12px;
-            border-radius: 3px;
-            flex-shrink: 0;
-        }
-
-        /* Streamlit overrides */
-        div[data-testid="stSelectbox"] label,
-        div[data-testid="stButton"] button {
-            font-family: 'DM Sans', sans-serif !important;
-        }
-
-        div[data-testid="stButton"] button {
-            border-radius: 10px !important;
-            font-weight: 600 !important;
+            border-radius: 999px;
+            flex: 0 0 12px;
         }
         </style>
         """,
@@ -313,32 +292,73 @@ def inject_css() -> None:
 def locate_data_file() -> tuple[Path, str]:
     real_file = Path("vacaciones.xlsx")
     demo_file = Path("vacaciones_demo.xlsx")
+
     if real_file.exists():
-        return real_file, "Archivo local: vacaciones.xlsx"
+        return real_file, "Archivo local detectado: vacaciones.xlsx"
     if demo_file.exists():
         return demo_file, "Usando archivo de ejemplo: vacaciones_demo.xlsx"
+
     raise FileNotFoundError(
-        "No se encontró 'vacaciones.xlsx' ni 'vacaciones_demo.xlsx'."
+        "No se encontró 'vacaciones.xlsx' ni 'vacaciones_demo.xlsx' en la carpeta del proyecto."
     )
 
 
 @st.cache_data(show_spinner=False)
 def load_data(file_path: str) -> pd.DataFrame:
     path = Path(file_path)
-    df = pd.read_csv(path) if path.suffix.lower() == ".csv" else pd.read_excel(path)
+
+    if path.suffix.lower() == ".csv":
+        df = pd.read_csv(path)
+    else:
+        df = pd.read_excel(path)
+
     df.columns = [str(c).strip().lower() for c in df.columns]
-    expected = {"nombre", "departamento", "fecha_desde", "fecha_hasta"}
-    missing = expected - set(df.columns)
-    if missing:
-        raise ValueError(f"Faltan columnas: {', '.join(sorted(missing))}")
+
+    expected_cols = {"nombre", "departamento", "fecha_desde", "fecha_hasta"}
+    missing_cols = expected_cols - set(df.columns)
+
+    if missing_cols:
+        raise ValueError(
+            f"Faltan columnas obligatorias en el archivo: {', '.join(sorted(missing_cols))}"
+        )
+
     df = df[["nombre", "departamento", "fecha_desde", "fecha_hasta"]].copy()
     df["nombre"] = df["nombre"].astype(str).str.strip()
     df["departamento"] = df["departamento"].astype(str).str.strip()
     df["fecha_desde"] = pd.to_datetime(df["fecha_desde"], errors="coerce")
     df["fecha_hasta"] = pd.to_datetime(df["fecha_hasta"], errors="coerce")
-    df = df.dropna(subset=["nombre", "departamento", "fecha_desde", "fecha_hasta"])
-    df = df[df["fecha_hasta"] >= df["fecha_desde"]]
+
+    df = df.dropna(subset=["nombre", "departamento", "fecha_desde", "fecha_hasta"]).copy()
+    df = df[df["fecha_hasta"] >= df["fecha_desde"]].copy()
+
     return df.sort_values(["fecha_desde", "nombre"]).reset_index(drop=True)
+
+
+@st.cache_data(show_spinner=False)
+def expand_vacation_ranges(df: pd.DataFrame) -> pd.DataFrame:
+    records = []
+
+    for row in df.itertuples(index=False):
+        start_date = row.fecha_desde.date()
+        end_date = row.fecha_hasta.date()
+        current = start_date
+
+        while current <= end_date:
+            records.append(
+                {
+                    "fecha": current,
+                    "nombre": row.nombre,
+                    "departamento": row.departamento,
+                    "fecha_desde": row.fecha_desde.date(),
+                    "fecha_hasta": row.fecha_hasta.date(),
+                }
+            )
+            current += timedelta(days=1)
+
+    expanded = pd.DataFrame(records)
+    if not expanded.empty:
+        expanded = expanded.sort_values(["fecha", "nombre"]).reset_index(drop=True)
+    return expanded
 
 
 # =========================================================
@@ -352,188 +372,311 @@ def init_session_state() -> None:
         st.session_state.selected_month = today.month
 
 
+# =========================================================
+# UTILIDADES
+# =========================================================
 def shift_month(year: int, month: int, offset: int) -> tuple[int, int]:
-    m, y = month + offset, year
-    while m < 1:
-        m += 12; y -= 1
-    while m > 12:
-        m -= 12; y += 1
-    return y, m
+    new_month = month + offset
+    new_year = year
+
+    while new_month < 1:
+        new_month += 12
+        new_year -= 1
+    while new_month > 12:
+        new_month -= 12
+        new_year += 1
+
+    return new_year, new_month
 
 
-# =========================================================
-# CÁLCULO DE EVENTOS PARA EL CALENDARIO (estilo "span")
-# =========================================================
-def build_span_events(df: pd.DataFrame, year: int, month: int) -> dict[date, list[dict]]:
+def get_month_boundaries(year: int, month: int) -> tuple[date, date]:
+    first_day = date(year, month, 1)
+    last_day = date(year, month, calendar.monthrange(year, month)[1])
+    return first_day, last_day
+
+
+def filter_expanded_data(expanded_df: pd.DataFrame, department: str) -> pd.DataFrame:
+    if department == "Todos":
+        return expanded_df.copy()
+    return expanded_df[expanded_df["departamento"] == department].copy()
+
+
+def build_month_summary(filtered_expanded_df: pd.DataFrame, year: int, month: int) -> tuple[int, int]:
+    first_day, last_day = get_month_boundaries(year, month)
+    month_df = filtered_expanded_df[
+        (filtered_expanded_df["fecha"] >= first_day)
+        & (filtered_expanded_df["fecha"] <= last_day)
+    ].copy()
+
+    people_count = month_df["nombre"].nunique() if not month_df.empty else 0
+    departments_count = month_df["departamento"].nunique() if not month_df.empty else 0
+    return people_count, departments_count
+
+
+def build_month_detail_table(raw_df: pd.DataFrame, department: str, year: int, month: int) -> pd.DataFrame:
+    if department != "Todos":
+        raw_df = raw_df[raw_df["departamento"] == department].copy()
+
+    first_day, last_day = get_month_boundaries(year, month)
+    detail = raw_df[
+        (raw_df["fecha_desde"].dt.date <= last_day)
+        & (raw_df["fecha_hasta"].dt.date >= first_day)
+    ].copy()
+
+    if detail.empty:
+        return detail
+
+    detail["fecha_desde"] = detail["fecha_desde"].dt.strftime("%Y-%m-%d")
+    detail["fecha_hasta"] = detail["fecha_hasta"].dt.strftime("%Y-%m-%d")
+    return detail.rename(
+        columns={
+            "nombre": "Nombre",
+            "departamento": "Departamento",
+            "fecha_desde": "Fecha desde",
+            "fecha_hasta": "Fecha hasta",
+        }
+    )
+
+
+def escape_html(text: str) -> str:
+    return html.escape(str(text), quote=True)
+
+
+def get_person_color_map(names: list[str]) -> dict[str, dict[str, str]]:
+    palette = [
+        ("#3b82f6", "#1d4ed8"),
+        ("#10b981", "#047857"),
+        ("#f59e0b", "#b45309"),
+        ("#ef4444", "#b91c1c"),
+        ("#8b5cf6", "#6d28d9"),
+        ("#06b6d4", "#0e7490"),
+        ("#84cc16", "#4d7c0f"),
+        ("#f97316", "#c2410c"),
+        ("#ec4899", "#be185d"),
+        ("#14b8a6", "#0f766e"),
+        ("#6366f1", "#4338ca"),
+        ("#22c55e", "#15803d"),
+    ]
+
+    sorted_names = sorted(set(names))
+    color_map = {}
+    for i, person in enumerate(sorted_names):
+        bg, txt = palette[i % len(palette)]
+        color_map[person] = {"bg": bg, "txt": txt}
+    return color_map
+
+
+def assign_tracks_for_week(week_days: list[date], person_ranges: list[dict]) -> list[dict]:
     """
-    Para cada día del mes devuelve una lista de eventos ordenados por persona.
-    Cada evento tiene:
-      name, color, position: 'start'|'middle'|'end'|'solo', show_label: bool
+    Asigna una fila/track por persona para dibujar bandas horizontales limpias.
+    Cada rango semanal tendrá:
+    - track
+    - start_idx / end_idx dentro de la semana (0-6)
     """
-    first = date(year, month, 1)
-    last = date(year, month, calendar.monthrange(year, month)[1])
+    if not person_ranges:
+        return []
 
-    # Filtrar vacaciones que intersectan el mes
-    relevant = df[
-        (df["fecha_desde"].dt.date <= last) & (df["fecha_hasta"].dt.date >= first)
+    ranges = sorted(
+        person_ranges,
+        key=lambda x: (x["start_idx"], x["end_idx"], x["nombre"].lower())
+    )
+
+    track_end_positions = []
+    assigned = []
+
+    for item in ranges:
+        assigned_track = None
+        for track_idx, last_end in enumerate(track_end_positions):
+            if item["start_idx"] > last_end:
+                assigned_track = track_idx
+                track_end_positions[track_idx] = item["end_idx"]
+                break
+
+        if assigned_track is None:
+            assigned_track = len(track_end_positions)
+            track_end_positions.append(item["end_idx"])
+
+        item_copy = item.copy()
+        item_copy["track"] = assigned_track
+        assigned.append(item_copy)
+
+    return assigned
+
+
+def build_week_segments(filtered_expanded_df: pd.DataFrame, week_days: list[date]) -> tuple[dict, int]:
+    """
+    Genera segmentos semanales para que el nombre solo salga una vez
+    y el subrayado continúe por los días consecutivos.
+    """
+    if filtered_expanded_df.empty:
+        return {d: [] for d in week_days}, 0
+
+    week_start = week_days[0]
+    week_end = week_days[-1]
+
+    relevant = filtered_expanded_df[
+        (filtered_expanded_df["fecha"] >= week_start)
+        & (filtered_expanded_df["fecha"] <= week_end)
     ].copy()
 
     if relevant.empty:
-        return {}
+        return {d: [] for d in week_days}, 0
 
-    all_names = tuple(df["nombre"].unique())
-    color_map = build_color_map(all_names)
+    ranges = []
+    for person, g in relevant.groupby("nombre"):
+        person_days = sorted(g["fecha"].unique().tolist())
+        start_idx = week_days.index(person_days[0])
+        end_idx = week_days.index(person_days[-1])
 
-    # Por cada persona–rango, generar chips para cada día visible
-    day_events: dict[date, list[dict]] = {}
+        ranges.append(
+            {
+                "nombre": person,
+                "start_idx": start_idx,
+                "end_idx": end_idx,
+            }
+        )
 
-    for row in relevant.itertuples(index=False):
-        start = max(row.fecha_desde.date(), first)
-        end = min(row.fecha_hasta.date(), last)
-        true_start = row.fecha_desde.date()
-        true_end = row.fecha_hasta.date()
-        person = row.nombre
-        color = color_map[person]
+    assigned_ranges = assign_tracks_for_week(week_days, ranges)
+    per_day = {d: [] for d in week_days}
 
-        current = start
-        while current <= end:
-            is_start = (current == true_start)
-            is_end = (current == true_end)
+    for item in assigned_ranges:
+        for idx in range(item["start_idx"], item["end_idx"] + 1):
+            current_day = week_days[idx]
+            per_day[current_day].append(
+                {
+                    "nombre": item["nombre"],
+                    "track": item["track"],
+                    "start": idx == item["start_idx"],
+                    "end": idx == item["end_idx"],
+                    "single": item["start_idx"] == item["end_idx"],
+                }
+            )
 
-            if is_start and is_end:
-                pos = "solo"
-            elif is_start:
-                pos = "start"
-            elif is_end:
-                pos = "end"
-            else:
-                pos = "middle"
-
-            show_label = pos in ("start", "solo")
-
-            if current not in day_events:
-                day_events[current] = []
-            day_events[current].append({
-                "name": person,
-                "color": color,
-                "position": pos,
-                "show_label": show_label,
-            })
-            current += timedelta(days=1)
-
-    # Ordenar cada día por nombre para consistencia visual
-    for d in day_events:
-        day_events[d].sort(key=lambda e: e["name"])
-
-    return day_events
+    max_tracks = max((item["track"] for item in assigned_ranges), default=-1) + 1
+    return per_day, max_tracks
 
 
 # =========================================================
 # RENDER DEL CALENDARIO
 # =========================================================
-def _chip_html(ev: dict) -> str:
-    c = ev["color"]
-    pos = ev["position"]
-    label = ev["name"] if ev["show_label"] else "&nbsp;"
-    safe = label.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    style = (
-        f"background:{c['bg']};"
-        f"border-color:{c['border']};"
-        f"color:{c['text']};"
-    )
-    return f"<div class='ev-chip span-{pos}' style='{style}'>{safe}</div>"
-
-
-def render_month_calendar(
-    df: pd.DataFrame,
-    year: int,
-    month: int,
-) -> None:
-    cal = calendar.Calendar(firstweekday=0)
+def render_month_calendar(filtered_expanded_df: pd.DataFrame, year: int, month: int) -> None:
+    cal = calendar.Calendar(firstweekday=0)  # lunes
     month_weeks = list(cal.monthdatescalendar(year, month))
     today = date.today()
-    day_events = build_span_events(df, year, month)
 
-    weekday_names = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
-
-    html = ["<div class='cal-outer'>"]
-
-    # Cabecera días de semana
-    html.append("<div class='cal-header'>")
-    for wn in weekday_names:
-        html.append(f"<div class='cal-weekday'>{wn}</div>")
-    html.append("</div>")
-
-    # Grid de días
-    html.append("<div class='cal-grid'>")
-    for week in month_weeks:
-        for day in week:
-            classes = "day-cell"
-            if day.month != month:
-                classes += " other-month"
-            if day == today:
-                classes += " today"
-
-            events = day_events.get(day, [])
-
-            html.append(f"<div class='{classes}'>")
-            html.append(f"<div class='day-num'>{day.day}</div>")
-            html.append("<div class='events-col'>")
-
-            if events:
-                for ev in events:
-                    html.append(_chip_html(ev))
-            elif day.month == month:
-                html.append("<div class='empty-cell'>—</div>")
-
-            html.append("</div></div>")
-
-    html.append("</div></div>")
-    st.markdown("".join(html), unsafe_allow_html=True)
-
-
-# =========================================================
-# LEYENDA DE COLORES
-# =========================================================
-def render_legend(df: pd.DataFrame, year: int, month: int) -> None:
-    first = date(year, month, 1)
-    last = date(year, month, calendar.monthrange(year, month)[1])
-    in_month = df[
-        (df["fecha_desde"].dt.date <= last) & (df["fecha_hasta"].dt.date >= first)
-    ]["nombre"].unique()
-
-    if len(in_month) == 0:
-        return
-
-    all_names = tuple(df["nombre"].unique())
-    color_map = build_color_map(all_names)
-
-    items_html = ""
-    for name in sorted(in_month):
-        c = color_map[name]
-        safe = name.replace("&", "&amp;")
-        items_html += (
-            f"<div class='legend-item'>"
-            f"<div class='legend-dot' style='background:{c[\"bg\"]};border:2px solid {c[\"border\"]};'></div>"
-            f"{safe}</div>"
-        )
-
-    st.markdown(
-        f"<div class='legend-wrap'>{items_html}</div>",
-        unsafe_allow_html=True,
+    unique_people = (
+        sorted(filtered_expanded_df["nombre"].unique().tolist())
+        if not filtered_expanded_df.empty
+        else []
     )
+    color_map = get_person_color_map(unique_people)
 
+    weekday_names = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
-# =========================================================
-# MÉTRICAS
-# =========================================================
-def build_month_summary(df: pd.DataFrame, year: int, month: int) -> tuple[int, int]:
-    first = date(year, month, 1)
-    last = date(year, month, calendar.monthrange(year, month)[1])
-    in_month = df[
-        (df["fecha_desde"].dt.date <= last) & (df["fecha_hasta"].dt.date >= first)
-    ]
-    return in_month["nombre"].nunique(), in_month["departamento"].nunique()
+    html_parts = ["<div class='calendar-card'>"]
+
+    # Leyenda compacta
+    if unique_people:
+        legend_people = unique_people[:8]
+        html_parts.append("<div class='calendar-legend'>")
+        for person in legend_people:
+            colors = color_map[person]
+            html_parts.append(
+                f"""
+                <div class='legend-item'>
+                    <span class='legend-dot' style='background:{colors["bg"]}'></span>
+                    <span>{escape_html(person)}</span>
+                </div>
+                """
+            )
+        if len(unique_people) > 8:
+            html_parts.append(
+                f"<div class='legend-item'><span style='color:#64748b'>+{len(unique_people)-8} más</span></div>"
+            )
+        html_parts.append("</div>")
+
+    # Encabezado días
+    html_parts.append("<div class='calendar-header'>")
+    for day_name in weekday_names:
+        html_parts.append(f"<div class='weekday'>{day_name}</div>")
+    html_parts.append("</div>")
+
+    # Semanas
+    for week in month_weeks:
+        week_segments, max_tracks = build_week_segments(filtered_expanded_df, week)
+        html_parts.append("<div class='week-row'>")
+
+        for current_day in week:
+            classes = ["day-cell"]
+            if current_day.month != month:
+                classes.append("other-month")
+            if current_day == today:
+                classes.append("today")
+
+            html_parts.append(f"<div class='{' '.join(classes)}'>")
+            html_parts.append(
+                f"<div class='day-top'><div class='day-number'>{current_day.day}</div></div>"
+            )
+
+            html_parts.append("<div class='track-layer'>")
+
+            day_items = sorted(week_segments.get(current_day, []), key=lambda x: x["track"])
+
+            if max_tracks == 0 and current_day.month == month:
+                html_parts.append("<div class='empty-note'>—</div>")
+            else:
+                items_by_track = {item["track"]: item for item in day_items}
+
+                hidden_count = 0
+                max_visible_tracks = 4  # para mantener limpio
+
+                for track_idx in range(max_tracks):
+                    if track_idx >= max_visible_tracks:
+                        if track_idx in items_by_track:
+                            hidden_count += 1
+                        continue
+
+                    item = items_by_track.get(track_idx)
+                    if item is None:
+                        html_parts.append("<div class='vac-line' style='visibility:hidden'></div>")
+                        continue
+
+                    person = item["nombre"]
+                    colors = color_map.get(person, {"bg": "#94a3b8", "txt": "#334155"})
+
+                    class_names = ["vac-line"]
+                    if item["single"]:
+                        class_names.append("single")
+                    else:
+                        if item["start"]:
+                            class_names.append("start")
+                        if item["end"]:
+                            class_names.append("end")
+
+                    name_html = (
+                        f"<span class='vac-name'>{escape_html(person)}</span>"
+                        if item["start"]
+                        else ""
+                    )
+
+                    html_parts.append(
+                        f"""
+                        <div class="{' '.join(class_names)}"
+                             style="--bg:{colors['bg']}; --txt:{colors['txt']};">
+                            {name_html}
+                        </div>
+                        """
+                    )
+
+                if hidden_count > 0:
+                    html_parts.append(f"<div class='extra-note'>+{hidden_count} más</div>")
+
+            html_parts.append("</div></div>")
+
+        html_parts.append("</div>")
+
+    html_parts.append("</div>")
+    st.markdown("".join(html_parts), unsafe_allow_html=True)
 
 
 # =========================================================
@@ -543,137 +686,153 @@ def main() -> None:
     inject_css()
     init_session_state()
 
-    # ── Hero ──────────────────────────────────────────────
     st.markdown(
         """
         <div class='hero-wrap'>
-            <div class='hero-title'>📅 Vacaciones del personal</div>
-            <div class='hero-subtitle'>Calendario mensual · Visualiza quién está de vacaciones por fecha y departamento</div>
+            <div class='hero-title'>Vacaciones del personal</div>
+            <div class='hero-subtitle'>
+                Calendario mensual para visualizar el personal en vacaciones por fecha y departamento.
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    # ── Carga de datos ────────────────────────────────────
     try:
         file_path, file_note = locate_data_file()
         df = load_data(str(file_path))
+        expanded_df = expand_vacation_ranges(df)
     except Exception as exc:
         st.error(f"No fue posible cargar los datos: {exc}")
         st.stop()
 
     departments = ["Todos"] + sorted(df["departamento"].dropna().unique().tolist())
-    year_min = max(2020, df["fecha_desde"].dt.year.min() - 1)
-    year_max = df["fecha_hasta"].dt.year.max() + 2
-    year_options = list(range(year_min, year_max))
+    year_options = list(
+        range(
+            max(2020, df["fecha_desde"].dt.year.min() - 1),
+            df["fecha_hasta"].dt.year.max() + 2,
+        )
+    )
     month_options = list(range(1, 13))
-    month_names = ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
-                   "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
 
-    # ── Toolbar ───────────────────────────────────────────
     st.markdown("<div class='toolbar-wrap'>", unsafe_allow_html=True)
-    c1, c2, c3, c4, c5, c6 = st.columns([1, 0.7, 1, 1.8, 1, 1])
 
-    with c1:
-        if st.button("◀ Anterior", use_container_width=True):
-            y, m = shift_month(st.session_state.selected_year, st.session_state.selected_month, -1)
-            st.session_state.selected_year, st.session_state.selected_month = y, m
+    nav_col_1, nav_col_2, nav_col_3, nav_col_4, nav_col_5, nav_col_6 = st.columns(
+        [1.05, 0.7, 1.05, 1.65, 0.95, 1.05]
+    )
+
+    with nav_col_1:
+        if st.button("◀ Mes anterior", use_container_width=True):
+            y, m = shift_month(
+                st.session_state.selected_year,
+                st.session_state.selected_month,
+                -1
+            )
+            st.session_state.selected_year = y
+            st.session_state.selected_month = m
             st.rerun()
-    with c2:
+
+    with nav_col_2:
         if st.button("Hoy", use_container_width=True):
-            t = date.today()
-            st.session_state.selected_year, st.session_state.selected_month = t.year, t.month
+            today = date.today()
+            st.session_state.selected_year = today.year
+            st.session_state.selected_month = today.month
             st.rerun()
-    with c3:
-        if st.button("Siguiente ▶", use_container_width=True):
-            y, m = shift_month(st.session_state.selected_year, st.session_state.selected_month, 1)
-            st.session_state.selected_year, st.session_state.selected_month = y, m
+
+    with nav_col_3:
+        if st.button("Mes siguiente ▶", use_container_width=True):
+            y, m = shift_month(
+                st.session_state.selected_year,
+                st.session_state.selected_month,
+                1
+            )
+            st.session_state.selected_year = y
+            st.session_state.selected_month = m
             st.rerun()
-    with c4:
-        selected_dept = st.selectbox("Departamento", departments, index=0)
-    with c5:
-        sel_year = st.selectbox(
-            "Año", year_options,
+
+    with nav_col_4:
+        selected_department = st.selectbox("Departamento", departments, index=0)
+
+    with nav_col_5:
+        selected_year = st.selectbox(
+            "Año",
+            year_options,
             index=year_options.index(st.session_state.selected_year)
             if st.session_state.selected_year in year_options else 0,
         )
-        if sel_year != st.session_state.selected_year:
-            st.session_state.selected_year = sel_year
-    with c6:
-        sel_month = st.selectbox(
-            "Mes", month_options,
+        if selected_year != st.session_state.selected_year:
+            st.session_state.selected_year = selected_year
+
+    with nav_col_6:
+        selected_month = st.selectbox(
+            "Mes",
+            month_options,
             index=st.session_state.selected_month - 1,
-            format_func=lambda x: month_names[x - 1],
+            format_func=lambda x: [
+                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+            ][x - 1],
         )
-        if sel_month != st.session_state.selected_month:
-            st.session_state.selected_month = sel_month
+        if selected_month != st.session_state.selected_month:
+            st.session_state.selected_month = selected_month
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    year = st.session_state.selected_year
-    month = st.session_state.selected_month
+    selected_year = st.session_state.selected_year
+    selected_month = st.session_state.selected_month
 
-    # Filtrar por departamento
-    df_filtered = df if selected_dept == "Todos" else df[df["departamento"] == selected_dept].copy()
+    filtered_expanded = filter_expanded_data(expanded_df, selected_department)
+    people_count, departments_count = build_month_summary(
+        filtered_expanded,
+        selected_year,
+        selected_month
+    )
 
-    # ── Métricas ──────────────────────────────────────────
-    people_count, dept_count = build_month_summary(df_filtered, year, month)
+    metric_col_1, metric_col_2, metric_col_3 = st.columns([1, 1, 2.4])
 
-    m1, m2, m3 = st.columns([1, 1, 2.5])
-    with m1:
+    with metric_col_1:
         st.markdown(
-            f"<div class='metric-card'>"
-            f"<div class='metric-label'>Personas en vacaciones</div>"
-            f"<div class='metric-value'>{people_count}</div>"
-            f"</div>",
-            unsafe_allow_html=True,
-        )
-    with m2:
-        st.markdown(
-            f"<div class='metric-card'>"
-            f"<div class='metric-label'>Departamentos impactados</div>"
-            f"<div class='metric-value'>{dept_count}</div>"
-            f"</div>",
-            unsafe_allow_html=True,
-        )
-    with m3:
-        st.markdown(
-            f"<div class='metric-card'>"
-            f"<div class='metric-label'>Período visualizado</div>"
-            f"<div class='metric-period'>{month_names[month-1]} {year}</div>"
-            f"<div class='data-note'>{file_note}</div>"
-            f"</div>",
+            f"""
+            <div class='metric-card'>
+                <div class='metric-label'>Personas con vacaciones en el mes</div>
+                <div class='metric-value'>{people_count}</div>
+            </div>
+            """,
             unsafe_allow_html=True,
         )
 
-    # ── Calendario ────────────────────────────────────────
-    render_month_calendar(df_filtered, year, month)
+    with metric_col_2:
+        st.markdown(
+            f"""
+            <div class='metric-card'>
+                <div class='metric-label'>Departamentos impactados</div>
+                <div class='metric-value'>{departments_count}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-    # ── Leyenda ───────────────────────────────────────────
-    render_legend(df_filtered, year, month)
+    with metric_col_3:
+        month_name = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ][selected_month - 1]
 
-    # ── Tabla detalle ─────────────────────────────────────
-    first_day = date(year, month, 1)
-    last_day = date(year, month, calendar.monthrange(year, month)[1])
-    detail = df_filtered[
-        (df_filtered["fecha_desde"].dt.date <= last_day)
-        & (df_filtered["fecha_hasta"].dt.date >= first_day)
-    ].copy()
+        st.markdown(
+            f"""
+            <div class='metric-card'>
+                <div class='metric-label'>Período visualizado</div>
+                <div class='metric-value' style='font-size:1.3rem'>{month_name} {selected_year}</div>
+                <div class='data-source-note'>{escape_html(file_note)}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-    with st.expander("Ver detalle del mes en tabla", expanded=False):
-        if detail.empty:
-            st.info("No hay vacaciones registradas para el filtro y mes seleccionados.")
-        else:
-            detail_show = detail.copy()
-            detail_show["fecha_desde"] = detail_show["fecha_desde"].dt.strftime("%Y-%m-%d")
-            detail_show["fecha_hasta"] = detail_show["fecha_hasta"].dt.strftime("%Y-%m-%d")
-            detail_show = detail_show.rename(columns={
-                "nombre": "Nombre",
-                "departamento": "Departamento",
-                "fecha_desde": "Fecha desde",
-                "fecha_hasta": "Fecha hasta",
-            })
-            st.dataframe(detail_show, use_container_width=True, hide_index=True)
+    render_month_calendar(filtered_expanded, selected_year, selected_month)
+
+    # Si luego quieres volver a mostrar la tabla, la dejas activa.
+    # Por ahora la dejo fuera para que el calendario use mejor la pantalla.
 
 
 if __name__ == "__main__":

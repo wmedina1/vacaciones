@@ -11,7 +11,7 @@ import streamlit as st
 # CONFIGURACIÓN GENERAL
 # =========================================================
 st.set_page_config(
-    page_title="Vacaciones del personal",
+    page_title="RRHH | Vacaciones del Personal",
     page_icon="📅",
     layout="wide",
 )
@@ -602,7 +602,7 @@ def render_hero() -> None:
         <div class='hero-wrap'>
             {logo_html}
             <div>
-                <div class='hero-title'>Vacaciones del personal</div>
+                <div class='hero-title'>RRHH | Vacaciones del Personal</div>
                 <div class='hero-subtitle'>
                     Calendario mensual · Visualiza quién está de vacaciones por fecha y departamento
                 </div>

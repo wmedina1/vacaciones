@@ -628,6 +628,11 @@ def main() -> None:
         st.error(f"No fue posible cargar los datos: {exc}")
         st.stop()
 
+    if st.button("🔄 Limpiar caché y recargar"):
+        st.cache_data.clear()
+        st.cache_data.clear()
+        st.rerun()
+        
     departments = ["Todos"] + sorted(df["departamento"].dropna().unique().tolist())
     year_min = max(2020, df["fecha_desde"].dt.year.min() - 1)
     year_max = df["fecha_hasta"].dt.year.max() + 2

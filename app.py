@@ -2,6 +2,8 @@ import base64
 import calendar
 from datetime import date, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
+from datetime import datetime
 
 import pandas as pd
 import streamlit as st
@@ -390,7 +392,7 @@ def load_data(file_path: str) -> pd.DataFrame:
 # ESTADO DE SESIÓN
 # =========================================================
 def init_session_state() -> None:
-    today = date.today()
+    today = datetime.now(ZoneInfo("America/Santo_Domingo")).date()
     if "selected_year" not in st.session_state:
         st.session_state.selected_year = today.year
     if "selected_month" not in st.session_state:

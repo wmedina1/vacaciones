@@ -504,7 +504,7 @@ def render_month_calendar(df: pd.DataFrame, year: int, month: int) -> None:
     # Lunes primero; domingo queda al final (índice 6) y se muestra vacío
     cal = calendar.Calendar(firstweekday=0)
     month_weeks = list(cal.monthdatescalendar(year, month))
-    today = date.today()
+    today = datetime.now(ZoneInfo("America/Santo_Domingo")).date()
     day_events = build_span_events(df, year, month)
 
     weekday_names = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]

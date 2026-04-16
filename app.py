@@ -174,8 +174,7 @@ def inject_css() -> None:
 
         .cal-header {
             display: grid;
-            /* 6 columnas: lun-sáb (sin domingo) */
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(7, 1fr);
             background: #f7f9fb;
             border-bottom: 1px solid #e5ebf1;
         }
@@ -196,8 +195,7 @@ def inject_css() -> None:
 
         .cal-grid {
             display: grid;
-            /* 6 columnas: lun-sáb */
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(7, 1fr);
         }
 
         /* Altura compacta, adaptable */
@@ -211,7 +209,7 @@ def inject_css() -> None:
             overflow: hidden;
         }
 
-        .day-cell:nth-child(6n) { border-right: none; }
+        .day-cell:nth-child(7n) { border-right: none; }
         .day-cell.other-month   { background: #f8fafc; }
 
         .day-cell.today {
@@ -476,7 +474,7 @@ def build_span_events(df: pd.DataFrame, year: int, month: int) -> dict[date, lis
 
 
 # =========================================================
-# RENDER DEL CALENDARIO — 6 columnas (lun–sáb), sin domingo
+# RENDER DEL CALENDARIO — 7 columnas (lun–dom), domingo siempre vacío
 # =========================================================
 def _safe_html(text: str) -> str:
     return (
@@ -501,14 +499,13 @@ def _chip_html(ev: dict) -> str:
 
 
 def render_month_calendar(df: pd.DataFrame, year: int, month: int) -> None:
-    # Usamos firstweekday=0 (lunes) — el domingo queda al final (índice 6) y lo omitimos
+    # Lunes primero; domingo queda al final (índice 6) y se muestra vacío
     cal = calendar.Calendar(firstweekday=0)
     month_weeks = list(cal.monthdatescalendar(year, month))
     today = date.today()
     day_events = build_span_events(df, year, month)
 
-    # ── CAMBIO 2: Solo 6 días — lun a sáb; se elimina el domingo ──
-    weekday_names = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
+    weekday_names = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
     html = ["<div class='cal-outer'>"]
 
     html.append("<div class='cal-header'>")
@@ -518,8 +515,7 @@ def render_month_calendar(df: pd.DataFrame, year: int, month: int) -> None:
 
     html.append("<div class='cal-grid'>")
     for week in month_weeks:
-        # week[0..5] = lun..sáb, week[6] = domingo → lo omitimos
-        for day in week[:6]:
+        for day in week:
             classes = "day-cell"
             if day.month != month:
                 classes += " other-month"

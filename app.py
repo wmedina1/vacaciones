@@ -19,21 +19,20 @@ st.set_page_config(
 
 # =========================================================
 # PALETA DE COLORES POR PERSONA
-# Más sobria / menos encendida
 # =========================================================
 PERSON_COLORS = [
-    {"bg": "#e8eef5", "border": "#c8d4e3", "text": "#334155"},  # azul grisáceo
-    {"bg": "#eaf3ee", "border": "#c8ddcf", "text": "#355244"},  # verde suave
-    {"bg": "#f4efe6", "border": "#ded2bb", "text": "#5b4b32"},  # beige
-    {"bg": "#f2eaf0", "border": "#dcc9d8", "text": "#5b4252"},  # malva suave
-    {"bg": "#eceaf5", "border": "#cfcae2", "text": "#4b4865"},  # violeta gris
-    {"bg": "#f5ece6", "border": "#dfcbbc", "text": "#65493a"},  # terracota suave
-    {"bg": "#e8f1f2", "border": "#c7dbde", "text": "#35525a"},  # teal suave
-    {"bg": "#edf3ec", "border": "#d1ddd0", "text": "#425244"},  # oliva suave
-    {"bg": "#f4eaea", "border": "#e0caca", "text": "#5e4242"},  # rojo polvo
-    {"bg": "#eceff5", "border": "#cfd6e2", "text": "#3f4a63"},  # índigo suave
-    {"bg": "#f3f4ea", "border": "#dfe1cb", "text": "#55593b"},  # lima suave
-    {"bg": "#f3edf4", "border": "#ddd0df", "text": "#58455d"},  # morado suave
+    {"bg": "#e8eef5", "border": "#c8d4e3", "text": "#334155"},
+    {"bg": "#eaf3ee", "border": "#c8ddcf", "text": "#355244"},
+    {"bg": "#f4efe6", "border": "#ded2bb", "text": "#5b4b32"},
+    {"bg": "#f2eaf0", "border": "#dcc9d8", "text": "#5b4252"},
+    {"bg": "#eceaf5", "border": "#cfcae2", "text": "#4b4865"},
+    {"bg": "#f5ece6", "border": "#dfcbbc", "text": "#65493a"},
+    {"bg": "#e8f1f2", "border": "#c7dbde", "text": "#35525a"},
+    {"bg": "#edf3ec", "border": "#d1ddd0", "text": "#425244"},
+    {"bg": "#f4eaea", "border": "#e0caca", "text": "#5e4242"},
+    {"bg": "#eceff5", "border": "#cfd6e2", "text": "#3f4a63"},
+    {"bg": "#f3f4ea", "border": "#dfe1cb", "text": "#55593b"},
+    {"bg": "#f3edf4", "border": "#ddd0df", "text": "#58455d"},
 ]
 
 
@@ -54,7 +53,7 @@ def image_to_base64(image_path: str) -> str:
 
 
 # =========================================================
-# ESTILOS
+# ESTILOS — Calendario compacto y adaptable
 # =========================================================
 def inject_css() -> None:
     st.markdown(
@@ -67,123 +66,125 @@ def inject_css() -> None:
         }
 
         .block-container {
-            padding-top: 2.8rem !important;
-            padding-bottom: 2rem !important;
+            padding-top: 1.4rem !important;
+            padding-bottom: 1rem !important;
             max-width: 100% !important;
-            padding-left: 1.8rem !important;
-            padding-right: 1.8rem !important;
+            padding-left: 1.4rem !important;
+            padding-right: 1.4rem !important;
         }
 
-        [data-testid="stHeader"] {
-            display: none !important;
-        }
+        [data-testid="stHeader"] { display: none !important; }
 
+        /* ── HERO ── */
         .hero-wrap {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 1.45rem;
+            gap: 12px;
+            margin-bottom: 0.9rem;
         }
 
         .hero-logo {
-            width: 74px;
-            height: 74px;
+            width: 52px;
+            height: 52px;
             object-fit: contain;
             background: #ffffff;
             border: 1px solid #dde5ec;
-            border-radius: 16px;
-            padding: 8px;
-            box-shadow: 0 2px 10px rgba(15,23,42,0.04);
+            border-radius: 12px;
+            padding: 6px;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.04);
             flex-shrink: 0;
         }
 
         .hero-title {
             font-family: 'Bricolage Grotesque', sans-serif;
-            font-size: 2.2rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: #0f172a;
-            margin: 0 0 0.2rem 0;
-            letter-spacing: -0.04em;
-            line-height: 1.05;
+            margin: 0 0 0.1rem 0;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
         }
 
         .hero-subtitle {
             font-family: 'DM Sans', sans-serif;
             color: #6b7280;
-            font-size: 0.98rem;
+            font-size: 0.82rem;
             margin: 0;
         }
 
+        /* ── TOOLBAR ── */
         .toolbar-wrap {
             background: #ffffff;
             border: 1px solid #dde5ec;
-            border-radius: 16px;
-            padding: 0.85rem 1rem;
-            box-shadow: 0 2px 12px rgba(15,23,42,0.035);
-            margin-bottom: 1.1rem;
+            border-radius: 12px;
+            padding: 0.6rem 0.85rem;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.03);
+            margin-bottom: 0.75rem;
         }
 
+        /* ── MÉTRICAS ── */
         .metric-card {
             background: #ffffff;
             border: 1px solid #dde5ec;
-            border-radius: 16px;
-            padding: 1rem 1.15rem;
-            box-shadow: 0 2px 12px rgba(15,23,42,0.035);
+            border-radius: 12px;
+            padding: 0.65rem 0.9rem;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.03);
             height: 100%;
         }
 
         .metric-label {
             font-family: 'DM Sans', sans-serif;
             color: #6b7280;
-            font-size: 0.88rem;
+            font-size: 0.78rem;
             font-weight: 500;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.15rem;
         }
 
         .metric-value {
             font-family: 'Bricolage Grotesque', sans-serif;
             color: #111827;
-            font-size: 1.9rem;
+            font-size: 1.55rem;
             font-weight: 800;
             line-height: 1;
         }
 
         .metric-period {
             font-family: 'Bricolage Grotesque', sans-serif;
-            font-size: 1.28rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: #111827;
         }
 
         .data-note {
             font-family: 'DM Sans', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.74rem;
             color: #8a94a6;
-            margin-top: 0.25rem;
+            margin-top: 0.15rem;
         }
 
-        /* ── CALENDARIO ─────────────────────────── */
+        /* ── CALENDARIO COMPACTO ── */
         .cal-outer {
             background: #ffffff;
             border: 1px solid #dde5ec;
-            border-radius: 20px;
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 4px 22px rgba(15,23,42,0.04);
-            margin-top: 1rem;
+            box-shadow: 0 3px 14px rgba(15,23,42,0.04);
+            margin-top: 0.65rem;
         }
 
         .cal-header {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            /* 6 columnas: lun-sáb (sin domingo) */
+            grid-template-columns: repeat(6, 1fr);
             background: #f7f9fb;
             border-bottom: 1px solid #e5ebf1;
         }
 
         .cal-weekday {
-            padding: 0.8rem 0.5rem;
+            padding: 0.5rem 0.3rem;
             text-align: center;
             font-family: 'DM Sans', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.72rem;
             font-weight: 700;
             color: #6b7280;
             letter-spacing: 0.03em;
@@ -195,22 +196,23 @@ def inject_css() -> None:
 
         .cal-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            /* 6 columnas: lun-sáb */
+            grid-template-columns: repeat(6, 1fr);
         }
 
+        /* Altura compacta, adaptable */
         .day-cell {
-            min-height: 148px;
+            min-height: 90px;
             border-right: 1px solid #edf1f5;
             border-bottom: 1px solid #edf1f5;
-            padding: 0.52rem 0.42rem 0.42rem 0.42rem;
+            padding: 0.35rem 0.3rem 0.3rem 0.3rem;
             position: relative;
             background: #ffffff;
             overflow: hidden;
         }
 
-        .day-cell:nth-child(7n) { border-right: none; }
-
-        .day-cell.other-month { background: #f8fafc; }
+        .day-cell:nth-child(6n) { border-right: none; }
+        .day-cell.other-month   { background: #f8fafc; }
 
         .day-cell.today {
             background: linear-gradient(160deg, #f2f6fb 0%, #ffffff 65%);
@@ -218,16 +220,16 @@ def inject_css() -> None:
 
         .day-num {
             font-family: 'Bricolage Grotesque', sans-serif;
-            font-size: 0.92rem;
+            font-size: 0.78rem;
             font-weight: 700;
             color: #1f2937;
-            width: 1.9rem;
-            height: 1.9rem;
+            width: 1.5rem;
+            height: 1.5rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            margin-bottom: 0.42rem;
+            margin-bottom: 0.3rem;
         }
 
         .other-month .day-num { color: #c5ced8; }
@@ -240,16 +242,16 @@ def inject_css() -> None:
         .events-col {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
 
-        /* ── Barra tipo Google Calendar ── */
+        /* ── Chips compactos ── */
         .ev-chip {
-            min-height: 24px;
+            min-height: 20px;
             display: flex;
             align-items: center;
             font-family: 'DM Sans', sans-serif;
-            font-size: 0.72rem;
+            font-size: 0.65rem;
             font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
@@ -269,69 +271,69 @@ def inject_css() -> None:
         }
 
         .ev-chip.span-start {
-            border-radius: 6px 0 0 6px;
-            padding-left: 8px;
-            padding-right: 6px;
-            margin-left: -0.42rem;
+            border-radius: 5px 0 0 5px;
+            padding-left: 6px;
+            padding-right: 4px;
+            margin-left: -0.3rem;
             margin-right: 0;
         }
 
         .ev-chip.span-middle {
             border-radius: 0;
-            padding-left: 8px;
-            padding-right: 6px;
+            padding-left: 6px;
+            padding-right: 4px;
             margin-left: 0;
             margin-right: 0;
         }
 
         .ev-chip.span-end {
-            border-radius: 0 6px 6px 0;
-            padding-left: 8px;
-            padding-right: 6px;
+            border-radius: 0 5px 5px 0;
+            padding-left: 6px;
+            padding-right: 4px;
             margin-left: 0;
-            margin-right: -0.42rem;
+            margin-right: -0.3rem;
         }
 
         .ev-chip.span-solo {
-            border-radius: 6px;
-            padding-left: 8px;
-            padding-right: 8px;
-            margin-left: -0.42rem;
-            margin-right: -0.42rem;
+            border-radius: 5px;
+            padding-left: 6px;
+            padding-right: 6px;
+            margin-left: -0.3rem;
+            margin-right: -0.3rem;
         }
 
         .empty-cell {
             font-family: 'DM Sans', sans-serif;
             color: #d2dae3;
-            font-size: 0.78rem;
-            margin-top: 0.3rem;
+            font-size: 0.7rem;
+            margin-top: 0.2rem;
         }
 
         /* ── Leyenda ── */
         .legend-wrap {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem 1rem;
-            margin-top: 1rem;
-            padding: 0.8rem 1rem;
+            gap: 0.35rem 0.75rem;
+            margin-top: 0.6rem;
+            padding: 0.55rem 0.85rem;
             background: #ffffff;
             border: 1px solid #dde5ec;
-            border-radius: 14px;
+            border-radius: 10px;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 0.42rem;
+            gap: 0.35rem;
             font-family: 'DM Sans', sans-serif;
-            font-size: 0.82rem;
+            font-size: 0.76rem;
             font-weight: 500;
             color: #334155;
         }
 
         .legend-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 3px;
             flex-shrink: 0;
         }
@@ -342,7 +344,7 @@ def inject_css() -> None:
         }
 
         div[data-testid="stButton"] button {
-            border-radius: 10px !important;
+            border-radius: 8px !important;
             font-weight: 600 !important;
         }
         </style>
@@ -356,9 +358,9 @@ def inject_css() -> None:
 # =========================================================
 def locate_data_file() -> tuple[Path, str]:
     real_file = Path("vacaciones.xlsx")
-    demo_file = Path("vacaciones_demo.xlsx")
+    demo_file = Path("vacaciones.xlsx")
     if real_file.exists():
-        return real_file, "Archivo local: vacaciones.xlsx"
+        return real_file, "Archivo local: vacaciones"
     if demo_file.exists():
         return demo_file, "Usando archivo de ejemplo: vacaciones_demo.xlsx"
     raise FileNotFoundError("No se encontró 'vacaciones.xlsx' ni 'vacaciones_demo.xlsx'.")
@@ -409,8 +411,8 @@ def shift_month(year: int, month: int, offset: int) -> tuple[int, int]:
 
 
 # =========================================================
-# CÁLCULO DE EVENTOS PARA EL CALENDARIO
-# Ahora el nombre sale en cada tramo visible
+# CÁLCULO DE EVENTOS
+# Domingos (weekday == 6) se dejan en blanco.
 # =========================================================
 def build_span_events(df: pd.DataFrame, year: int, month: int) -> dict[date, list[dict]]:
     first = date(year, month, 1)
@@ -437,6 +439,11 @@ def build_span_events(df: pd.DataFrame, year: int, month: int) -> dict[date, lis
 
         current = start
         while current <= end:
+            # ── CAMBIO 1: Saltar domingos (weekday 6) ──
+            if current.weekday() == 6:
+                current += timedelta(days=1)
+                continue
+
             is_start = current == true_start
             is_end = current == true_end
 
@@ -449,9 +456,6 @@ def build_span_events(df: pd.DataFrame, year: int, month: int) -> dict[date, lis
             else:
                 pos = "middle"
 
-            # Aquí cambiamos la lógica: el nombre sale siempre
-            show_label = True
-
             if current not in day_events:
                 day_events[current] = []
 
@@ -460,7 +464,7 @@ def build_span_events(df: pd.DataFrame, year: int, month: int) -> dict[date, lis
                     "name": person,
                     "color": color,
                     "position": pos,
-                    "show_label": show_label,
+                    "show_label": True,
                 }
             )
             current += timedelta(days=1)
@@ -472,7 +476,7 @@ def build_span_events(df: pd.DataFrame, year: int, month: int) -> dict[date, lis
 
 
 # =========================================================
-# RENDER DEL CALENDARIO
+# RENDER DEL CALENDARIO — 6 columnas (lun–sáb), sin domingo
 # =========================================================
 def _safe_html(text: str) -> str:
     return (
@@ -488,23 +492,23 @@ def _chip_html(ev: dict) -> str:
     pos = ev["position"]
     label = ev["name"] if ev["show_label"] else ""
     safe = _safe_html(label)
-
     style = (
         f"background:{c['bg']};"
         f"color:{c['text']};"
         f"border-color:{c['border']};"
     )
-
     return f"<div class='ev-chip span-{pos}' style='{style}'><span>{safe}</span></div>"
 
 
 def render_month_calendar(df: pd.DataFrame, year: int, month: int) -> None:
+    # Usamos firstweekday=0 (lunes) — el domingo queda al final (índice 6) y lo omitimos
     cal = calendar.Calendar(firstweekday=0)
     month_weeks = list(cal.monthdatescalendar(year, month))
     today = date.today()
     day_events = build_span_events(df, year, month)
 
-    weekday_names = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
+    # ── CAMBIO 2: Solo 6 días — lun a sáb; se elimina el domingo ──
+    weekday_names = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
     html = ["<div class='cal-outer'>"]
 
     html.append("<div class='cal-header'>")
@@ -514,7 +518,8 @@ def render_month_calendar(df: pd.DataFrame, year: int, month: int) -> None:
 
     html.append("<div class='cal-grid'>")
     for week in month_weeks:
-        for day in week:
+        # week[0..5] = lun..sáb, week[6] = domingo → lo omitimos
+        for day in week[:6]:
             classes = "day-cell"
             if day.month != month:
                 classes += " other-month"
@@ -540,7 +545,7 @@ def render_month_calendar(df: pd.DataFrame, year: int, month: int) -> None:
 
 
 # =========================================================
-# LEYENDA DE COLORES
+# LEYENDA
 # =========================================================
 def render_legend(df: pd.DataFrame, year: int, month: int) -> None:
     first = date(year, month, 1)
@@ -594,7 +599,7 @@ def render_hero() -> None:
     else:
         logo_html = (
             "<div class='hero-logo' style='display:flex;align-items:center;justify-content:center;"
-            "font-size:1.6rem;color:#4b5563;'>🏢</div>"
+            "font-size:1.2rem;color:#4b5563;'>🏢</div>"
         )
 
     st.markdown(
@@ -628,11 +633,6 @@ def main() -> None:
         st.error(f"No fue posible cargar los datos: {exc}")
         st.stop()
 
-    if st.button("🔄 Limpiar caché y recargar"):
-        st.cache_data.clear()
-        st.cache_data.clear()
-        st.rerun()
-        
     departments = ["Todos"] + sorted(df["departamento"].dropna().unique().tolist())
     year_min = max(2020, df["fecha_desde"].dt.year.min() - 1)
     year_max = df["fecha_hasta"].dt.year.max() + 2
